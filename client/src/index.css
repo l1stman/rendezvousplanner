@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @font-face {
     font-family: mybold;
     src: url("/public/fonts/bold.otf") format("opentype");
@@ -12,6 +11,9 @@
     src: url("/public/fonts/forall.ttf") format("opentype");
   }
 
+body {
+    background-color: #1C1C1C;
+  }
 
   .dayPickerSelected {
     background-color: #4caf50 !important;
