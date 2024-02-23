@@ -10,4 +10,11 @@ const Layout = () => {
   )
 };
 
-export default Layout;
+const PublicLayout = () => {  // layout without navbar
+  return (
+    <>
+        <Outlet />
+    </>
+  )
+};
+export {Layout, PublicLayout};

@@ -28,6 +28,9 @@ body {
   .animate-in {
     animation: animateIn 0.3s ease 0.15s both;
   }
+  .animate-from-right {
+    animation: animateFromRight 0.3s ease 0.15s both;
+  }
   
   @keyframes animateIn {
     from {
@@ -40,4 +43,14 @@ body {
     }
   }
 
+  @keyframes animateFromRight {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
 
