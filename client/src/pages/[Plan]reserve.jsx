@@ -1,28 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { FaAngleLeft, FaCircleCheck  } from "react-icons/fa6";
 import { useParams } from "react-router-dom";
 const PlanReserve = () => {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
-    function formatDate(date) {
-        let day = date.getDate();
-        let month = date.getMonth() + 1; // Months are zero based
-        let year = date.getFullYear();
-      
-        // Pad the day and month with leading zeros if necessary
-        day = day < 10 ? '0' + day : day;
-        month = month < 10 ? '0' + month : month;
-      
-        return year + '-' + month + '-' + day;
-      }
-
-      const [plan, setPlan] = useState({})
-  var { id } = useParams();
-
+    
+    const [plan, setPlan] = useState({})
+    var { id } = useParams();
+    
   const fetchPlan = async () => {
     try {
-      setLoading(true);
+        setLoading(true);
       axios.get(`http://localhost:4000/plan/${id}`).then((response) => {
         if (response.data.success == false) return;
         setPlan(response.data);
@@ -38,31 +29,62 @@ const PlanReserve = () => {
     fetchPlan();
   }, [id]);
 
-      function formatTime(date) {
-        let hours = date.getHours();
-        let minutes = date.getMinutes();
-      
-        // Pad the hours and minutes with leading zeros if necessary
-        hours = hours < 10 ? '0' + hours : hours;
-        minutes = minutes < 10 ? '0' + minutes : minutes;
-      
-        return hours + ':' + minutes;
-      }
-
-      function handleSubmit(e) {
-        e.preventDefault();
-        setLoading(true)
-        var { name, cin, email } = e.target;
-
-        setTimeout(() => {
-            setLoading(false)
-            setSuccess(true)
-        }, 2500)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const { name, cin, email } = e.target;
+    
+    try {
+        const response = await axios.post(`http://localhost:4000/plan/${id}/reserve`, {
+            name: name.value,
+            cin: cin.value,
+            email: email.value
+        });
         
+        if (response.data.success) {
+            setSuccess(true);
+            setLoading(false);
+            console.log(response.data.rendezvous)
+            // Generate and download PDF
+            // generatePDF(name.value,cin.value,email.value);
       }
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  const generatePDF = (name, cin, email) => {
+    const content = `
+    <div class="p-4 bg-gray-100 border border-gray-300 rounded-lg">
+      <h2 class="text-2xl font-bold mb-2" style="color: black;">${plan.title}</h2>
+      <div class="grid grid-cols-2 gap-2 mb-4">
+        <div class="text-sm" style="color: black;">
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>CIN:</strong> ${cin}</p>
+          <p><strong>Email:</strong> ${email}</p>
+        </div>
+        <div class="text-sm" style="color: black;">
+          <p><strong>Date:</strong> ${formatDate(new Date(plan.date))}</p>
+          <p><strong>Time:</strong> ${formatTime(new Date(plan.date))}</p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  
+    const pdf = new jsPDF();
+    pdf.html(content, {
+      callback: () => {
+        pdf.save('user_information.pdf');
+      }
+    });
+  };
+  
+  
   return (
     <div className="min-h-screen flex flex-col sm:flex-row">
-    <div className="w-full sm:w-1/2 bg-cover flex flex-col items-start justify-start p-4" style={{backgroundImage: `url('${plan.thumbnail ? plan.thumbnail : "https://source.unsplash.com/random"}')`}}>
+    <div id="pdf-content" className="w-full sm:w-1/2 bg-cover flex flex-col items-start justify-start p-4" style={{backgroundImage: `url('${plan.thumbnail ? plan.thumbnail : "https://source.unsplash.com/random"}')`}}>
         <button onClick={() => window.history.back()} className="text-white p-2 rounded-md bg-primary text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-2xl border border-white"><FaAngleLeft /></button>
         {/* Add more content for the left half here if needed */}
     </div>
@@ -80,7 +102,7 @@ const PlanReserve = () => {
 </p>
             </div>
         ) : 
-            <div className="max-w-md w-full space-y-8">
+        <div className="max-w-md w-full space-y-8">
             <div>
                 <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
                     {plan.title} 
@@ -119,4 +141,27 @@ const PlanReserve = () => {
   );
 };
 
-export default PlanReserve;
+function formatDate(date) {
+    let day = date.getDate();
+    let month = date.getMonth() + 1; // Months are zero based
+    let year = date.getFullYear();
+  
+    // Pad the day and month with leading zeros if necessary
+    day = day < 10 ? '0' + day : day;
+    month = month < 10 ? '0' + month : month;
+  
+    return year + '-' + month + '-' + day;
+  }
+  function formatTime(date) {
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
+      
+        // Pad the hours and minutes with leading zeros if necessary
+        hours = hours < 10 ? '0' + hours : hours;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+      
+        return hours + ':' + minutes;
+    }
+
+  export default PlanReserve;
+  
