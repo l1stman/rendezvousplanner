@@ -5,24 +5,29 @@ import { useParams } from "react-router-dom";
 const PlanReserve = () => {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
-    function formatDate(date) {
-        let day = date.getDate();
-        let month = date.getMonth() + 1; // Months are zero based
-        let year = date.getFullYear();
-      
-        // Pad the day and month with leading zeros if necessary
-        day = day < 10 ? '0' + day : day;
-        month = month < 10 ? '0' + month : month;
-      
-        return year + '-' + month + '-' + day;
-      }
-
-      const [plan, setPlan] = useState({})
-  var { id } = useParams();
+    
+    const [plan, setPlan] = useState({})
+    var { id } = useParams();
+    
+    const downloadPdf = async (ApiURl) => {
+        try {
+          const response = await fetch(ApiURl);
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'RendezVous inscription.pdf');
+          document.body.appendChild(link);
+          link.click();
+          link.parentNode.removeChild(link);
+        } catch (err) {
+          console.error('Failed to download file:', err);
+        }
+      };
 
   const fetchPlan = async () => {
     try {
-      setLoading(true);
+        setLoading(true);
       axios.get(`http://localhost:4000/plan/${id}`).then((response) => {
         if (response.data.success == false) return;
         setPlan(response.data);
@@ -37,31 +42,35 @@ const PlanReserve = () => {
     fetchPlan();
   }, [id]);
 
-      function formatTime(date) {
-        let hours = date.getHours();
-        let minutes = date.getMinutes();
-      
-        // Pad the hours and minutes with leading zeros if necessary
-        hours = hours < 10 ? '0' + hours : hours;
-        minutes = minutes < 10 ? '0' + minutes : minutes;
-      
-        return hours + ':' + minutes;
-      }
-
-      function handleSubmit(e) {
-        e.preventDefault();
-        setLoading(true)
-        var { name, cin, email } = e.target;
-
-        setTimeout(() => {
-            setLoading(false)
-            setSuccess(true)
-        }, 2500)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const { name, cin, email } = e.target;
+    
+    try {
+        const response = await axios.post(`http://localhost:4000/plan/${id}/reserve`, {
+            name: name.value,
+            cin: cin.value,
+            email: email.value
+        });
         
+        if (response.data.success) {
+            setSuccess(true);
+            setLoading(false);
+            downloadPdf(response.data.link); // Download the pdf
       }
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  
+  
+  
   return (
     <div className="min-h-screen flex flex-col sm:flex-row">
-    <div className="w-full sm:w-1/2 bg-cover flex flex-col items-start justify-start p-4" style={{backgroundImage: `url('${plan.thumbnail ? plan.thumbnail : "https://source.unsplash.com/random"}')`}}>
+    <div id="pdf-content" className="w-full sm:w-1/2 bg-cover flex flex-col items-start justify-start p-4" style={{backgroundImage: `url('${plan.thumbnail ? plan.thumbnail : "https://source.unsplash.com/random"}')`}}>
         <button onClick={() => window.history.back()} className="text-white p-2 rounded-md bg-primary text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-2xl border border-white"><FaAngleLeft /></button>
         {/* Add more content for the left half here if needed */}
     </div>
@@ -74,12 +83,12 @@ const PlanReserve = () => {
     Your appointment has been reserved successfully
     <br />
     <span className='text-center text-sm'>
-        Please check your mail box for confirmation
+        Please check your RendezVous inscription file
     </span>
 </p>
             </div>
         ) : 
-            <div className="max-w-md w-full space-y-8">
+        <div className="max-w-md w-full space-y-8">
             <div>
                 <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
                     {plan.title} 
@@ -92,7 +101,7 @@ const PlanReserve = () => {
                         <input id="name" name="name" type="text" required className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:z-10 sm:text-sm" placeholder="Name" />
                     </div>
                     <div>
-                        <label htmlFor="cin" className="text-white">National ID card or password number</label>
+                        <label htmlFor="cin" className="text-white">National ID card or passport number</label>
                         <input id="cin" name="cin" type="text" required className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:z-10 sm:text-sm" placeholder="ID" />
                     </div>
                     <div>
@@ -118,4 +127,27 @@ const PlanReserve = () => {
   );
 };
 
-export default PlanReserve;
+function formatDate(date) {
+    let day = date.getDate();
+    let month = date.getMonth() + 1; // Months are zero based
+    let year = date.getFullYear();
+  
+    // Pad the day and month with leading zeros if necessary
+    day = day < 10 ? '0' + day : day;
+    month = month < 10 ? '0' + month : month;
+  
+    return year + '-' + month + '-' + day;
+  }
+  function formatTime(date) {
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
+      
+        // Pad the hours and minutes with leading zeros if necessary
+        hours = hours < 10 ? '0' + hours : hours;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+      
+        return hours + ':' + minutes;
+    }
+
+  export default PlanReserve;
+  
