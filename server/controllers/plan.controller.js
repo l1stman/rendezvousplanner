@@ -170,7 +170,39 @@ const reserve = async (req, res) => {
     });
     rendezvous.save()
     updatedPlan.save()
-    return res.json({ success: true, rendezvous })
+    
+    fetch('https://us1.pdfgeneratorapi.com/api/v4/documents/generate', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjOGFhMmJiMjUzYmI2ZDE0MWI3NjllZTdiZjc2NjY4ZDk3YTgwMWI3MDNmMmM1ZWUxZTcwYTE2NjMwMzM5YTgwIiwic3ViIjoibWFyb3VhbmVha2hpYXI3QGdtYWlsLmNvbSIsImV4cCI6MTcwOTkxNzQ2N30.idgRzZWgRoxrw59nNubp9KClLH9SGxESncIAK2BrG34',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "template": {
+            "id": "985092",
+            "data": {
+                "name": rendezvous.name,
+                "cin": rendezvous.cin,
+                "email": rendezvous.email,
+                "serial": rendezvous.serial,
+                "title": rendezvous.plan.title,
+                "description": rendezvous.plan.description,
+                "date": formatDate(rendezvous.plan.date),
+                "time": formatTime(rendezvous.plan.date),
+                "datenow": formatDate(new Date())
+            }
+          },
+          "format": "pdf",
+          "output": "url",
+          "name": "RendezVous inscription"
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        return res.json({ success: true, rendezvous, link: data.response })
+    })
+      .catch((error) => console.error('Error:', error));
+
 }
 
 
@@ -217,5 +249,26 @@ function generateSerial() {
     return code;
   }
 
+  function formatDate(date) {
+    let day = date.getDate();
+    let month = date.getMonth() + 1; // Months are zero based
+    let year = date.getFullYear();
   
+    // Pad the day and month with leading zeros if necessary
+    day = day < 10 ? '0' + day : day;
+    month = month < 10 ? '0' + month : month;
+  
+    return day + '/' + month + '/' + year;
+  }
+  function formatTime(date) {
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
+      
+        // Pad the hours and minutes with leading zeros if necessary
+        hours = hours < 10 ? '0' + hours : hours;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+      
+        return hours + ':' + minutes;
+    }
+
 export default { id, get, create, edit, remove, list, listByOwner, listByDate, listByPage, listLength, reserve, serial, getRendezvous }

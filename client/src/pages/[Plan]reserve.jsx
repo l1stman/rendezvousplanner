@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 import { FaAngleLeft, FaCircleCheck  } from "react-icons/fa6";
 import { useParams } from "react-router-dom";
 const PlanReserve = () => {
@@ -11,6 +9,22 @@ const PlanReserve = () => {
     const [plan, setPlan] = useState({})
     var { id } = useParams();
     
+    const downloadPdf = async (ApiURl) => {
+        try {
+          const response = await fetch(ApiURl);
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'RendezVous inscription.pdf');
+          document.body.appendChild(link);
+          link.click();
+          link.parentNode.removeChild(link);
+        } catch (err) {
+          console.error('Failed to download file:', err);
+        }
+      };
+
   const fetchPlan = async () => {
     try {
         setLoading(true);
@@ -44,9 +58,7 @@ const PlanReserve = () => {
         if (response.data.success) {
             setSuccess(true);
             setLoading(false);
-            console.log(response.data.rendezvous)
-            // Generate and download PDF
-            // generatePDF(name.value,cin.value,email.value);
+            downloadPdf(response.data.link); // Download the pdf
       }
     } catch (error) {
       console.log(error);
@@ -54,32 +66,7 @@ const PlanReserve = () => {
     }
   };
 
-  const generatePDF = (name, cin, email) => {
-    const content = `
-    <div class="p-4 bg-gray-100 border border-gray-300 rounded-lg">
-      <h2 class="text-2xl font-bold mb-2" style="color: black;">${plan.title}</h2>
-      <div class="grid grid-cols-2 gap-2 mb-4">
-        <div class="text-sm" style="color: black;">
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>CIN:</strong> ${cin}</p>
-          <p><strong>Email:</strong> ${email}</p>
-        </div>
-        <div class="text-sm" style="color: black;">
-          <p><strong>Date:</strong> ${formatDate(new Date(plan.date))}</p>
-          <p><strong>Time:</strong> ${formatTime(new Date(plan.date))}</p>
-        </div>
-      </div>
-    </div>
-  `;
-
   
-    const pdf = new jsPDF();
-    pdf.html(content, {
-      callback: () => {
-        pdf.save('user_information.pdf');
-      }
-    });
-  };
   
   
   return (
@@ -97,7 +84,7 @@ const PlanReserve = () => {
     Your appointment has been reserved successfully
     <br />
     <span className='text-center text-sm'>
-        Please check your mail box for confirmation
+        Please check your RendezVous inscription file
     </span>
 </p>
             </div>
@@ -115,7 +102,7 @@ const PlanReserve = () => {
                         <input id="name" name="name" type="text" required className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:z-10 sm:text-sm" placeholder="Name" />
                     </div>
                     <div>
-                        <label htmlFor="cin" className="text-white">National ID card or password number</label>
+                        <label htmlFor="cin" className="text-white">National ID card or passport number</label>
                         <input id="cin" name="cin" type="text" required className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:z-10 sm:text-sm" placeholder="ID" />
                     </div>
                     <div>
