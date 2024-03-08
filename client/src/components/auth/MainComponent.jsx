@@ -30,7 +30,9 @@ const AuthComponent = () => {
   const SuccessStatus = (status) => {
     setSuccess(status)
   }
-
+  const SignUpPageStatus = (status) => {
+    setsignupPage(status)
+  }
   const handleTypeChange = (data) => {
     setType(data);
     window.history.pushState({}, '', `?type=${data}`);
@@ -77,7 +79,7 @@ const AuthComponent = () => {
         )}
 
         {type === "signup" && (
-          <SignUp page={signuppage} sendStatus={SuccessStatus} />
+          <SignUp page={signuppage} sendStatus={SuccessStatus} SignUpPageStatus={SignUpPageStatus} />
         )}
         {type === "signin" && (
           <Signin sendStatus={SuccessStatus}/>

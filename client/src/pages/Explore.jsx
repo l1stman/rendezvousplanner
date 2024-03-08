@@ -64,7 +64,6 @@ const fetchPostsByDate = async (date) => {
             `http://localhost:4000/plan/list/date/${date}`
           )
           .then( (response) => {
-            console.log(response.data)
             if (response.data.success) {
               setPlans(response.data.plans);
               setLoading(false);

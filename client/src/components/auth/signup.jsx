@@ -1,29 +1,122 @@
 import React, { useState } from "react";
-
-const SignUp = ({ page, sendStatus }) => {
+import { Toast } from 'flowbite-react';
+import { HiCheck, HiExclamation, HiX } from 'react-icons/hi';
+import axios from "axios";
+const SignUp = ({ page, sendStatus, SignUpPageStatus }) => {
 
     const [loading, setLoading] = useState(false);
-    const [signuppage, setsignupPage] = useState(page);
+    const [toast, setToast] = useState({
+        status: false,
+        message: "",
+    });
+   async function handleAccountSubmit(e) {
+     e.preventDefault();
+     setLoading(true);
+     setToast({
+       status: false,
+       message: "",
+     });
+     const { email, password, password_verification } = e.target;
 
-    function handleAccountSubmit(e) {
+     if (password.value !== password_verification.value) {
+       setLoading(false);
+       return setToast({
+         status: true,
+         message: "Password does not match",
+       });
+     } else {
+       const accountData = {
+         email: email.value,
+         password: password.value,
+       };
+
+       try {
+         const response = await axios.post(
+           "http://localhost:4000/auth/signup",
+           accountData,
+           {
+             headers: {
+               "Content-Type": "application/json",
+             },
+           }
+         );
+         const data = response.data;
+         if (!data.success) {
+           setLoading(false);
+           return setToast({
+             status: true,
+             message: data.message,
+           });
+         } else {
+           setLoading(false);
+           SignUpPageStatus("profile");
+           localStorage.setItem("_id", data.account._id);
+         }
+       } catch (error) {
+         setLoading(false);
+         console.error("Failed to sign up:", error);
+       }
+     }
+   }
+    async function handleProfileSubmit(e) {
         e.preventDefault();
-        // Add your signup logic here
-    }
-    function handleProfileSubmit(e) {
-        e.preventDefault();
-        
-        sendStatus({
-          status: true,
-          type: "signup",
-          message: "Account created successfully",
-          p: "You can now sign-in here",
-        });
+        setLoading(true);
+      var owner = localStorage.getItem("_id");
+      if(!owner) return setLoading(false);
+        const { name, bio } = e.target;
+        const profileData = {
+          owner: owner,
+          name: name.value,
+          bio: bio.value,
+        };
+        try {
+          const response = await axios.post(
+            "http://localhost:4000/profile/create",
+            profileData,
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const data = response.data;
+          if (!data.success) {
+            setLoading(false);
+            return setToast({
+              status: true,
+              message: data.message,
+            });
+          } else {
+            localStorage.removeItem("_id");
+            setLoading(false);
+            sendStatus({
+              status: true,
+              type: "signup",
+              message: "Account created successfully",
+              p: "You can now sign-in here",
+            });
+          }
+        } catch (error) {
+          setLoading(false);
+          console.error("Failed to sign up:", error);
+        }
+
     }
 
   return (
    <>
-   {signuppage === "account" ? (
+   {page === "account" ? (
+    
     <form className="mt-8 space-y-6 animate-in" onSubmit={handleAccountSubmit}>
+    {toast.status && (
+        <Toast>
+        <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-orange-100 text-orange-500 dark:bg-orange-700 dark:text-orange-200">
+          <HiExclamation className="h-5 w-5" />
+        </div>
+        <div className="ml-3 text-sm font-normal">{toast.message}</div>
+        <Toast.Toggle />
+      </Toast>
+    )}
     <div className="rounded-md shadow-sm -space-y-px">
       <div>
         <label htmlFor="email" className="text-white">
@@ -68,8 +161,8 @@ const SignUp = ({ page, sendStatus }) => {
         I agree to the terms and conditions
       </p>
       <button
-        onClick={() => setsignupPage("profile")}
-        // type="submit"
+        // onClick={() => setsignupPage("profile")}
+        type="submit"
         className="group relative w-full flex justify-center py-2 px-4 mt-1 border border-transparent text-sm font-medium rounded-md text-white bg-secondary hover:ring-secondary outline-none hover:ring-2"
       >
         {loading ? "loading..." : "Next"}
@@ -78,6 +171,15 @@ const SignUp = ({ page, sendStatus }) => {
   </form>
    ): (
     <form className="mt-8 space-y-6 animate-from-right" onSubmit={handleProfileSubmit}>
+      {toast.status && (
+        <Toast>
+        <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-orange-100 text-orange-500 dark:bg-orange-700 dark:text-orange-200">
+          <HiExclamation className="h-5 w-5" />
+        </div>
+        <div className="ml-3 text-sm font-normal">{toast.message}</div>
+        <Toast.Toggle />
+      </Toast>
+    )}
     <div className="rounded-md shadow-sm -space-y-px">
       <div>
         <label htmlFor="name" className="text-white">
@@ -101,7 +203,7 @@ const SignUp = ({ page, sendStatus }) => {
     </div>
     <div>
       <button
-        onClick={() => setsignupPage("profile")}
+        // onClick={() => setsignupPage("profile")}
         type="submit"
         className="group relative w-full flex justify-center py-2 px-4 mt-1 border border-transparent text-sm font-medium rounded-md text-white bg-secondary hover:ring-secondary outline-none hover:ring-2"
       >

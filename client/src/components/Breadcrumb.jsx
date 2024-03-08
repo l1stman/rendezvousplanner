@@ -20,14 +20,14 @@ const BreadcrumbComponent = ({ type, page }) => {
     return (
         <Flowbite theme={{ theme: customTheme }}>
 
-        {type === "signup" && page === "account" && (
+        {(type === "signup" && page === "account") && (
             <Breadcrumb aria-label="Default breadcrumb account">
             <Breadcrumb.Item href="#" icon={HiHome}></Breadcrumb.Item>
             <Breadcrumb.Item href="#">Sign-Up</Breadcrumb.Item>
             <Breadcrumb.Item>Account</Breadcrumb.Item>
           </Breadcrumb>
         )}
-        {type === "signup" && page === "profile" && (
+        {(type === "signup" && page !== "account") && (
             <Breadcrumb aria-label="Default breadcrumb profile">
             <Breadcrumb.Item href="#" icon={HiHome}></Breadcrumb.Item>
             <Breadcrumb.Item href="#">Sign-Up</Breadcrumb.Item>

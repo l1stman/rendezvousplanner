@@ -26,7 +26,6 @@ const PlanReserve = () => {
       axios.get(`http://localhost:4000/plan/${id}`).then((response) => {
         if (response.data.success == false) return;
         setPlan(response.data);
-        console.log(response.data)
         setLoading(false);
       });
     } catch (error) {
