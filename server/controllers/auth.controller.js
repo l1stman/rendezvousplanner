@@ -43,9 +43,8 @@ const signin = async (req, res) => {
   const passwordMatch = await bcrypt.compare(password, account.password);
   if (!passwordMatch)
     return res.json({ success: false, message: "Invalid password!" });
-  var data = { _id: account.id, email: account.email };
+  var data = { _id: account._id, email: account.email };
   const token = jwt.sign(data, jwtSecretKey);
-  req.session.account = account;
   res.json({ success: true, token: token });
 
   var profile = await profileSchema.findOne({
@@ -69,8 +68,15 @@ const protect = async (req, res) => {
       path: "owner",
       select: "-password",
     });
-  req.session.account = profile.owner;
-  res.json({ success: true, profile: profile });
+  req.session.account = { _id: profile.owner._id, email: profile.owner.email};
+  req.session.save(err => {
+    if (err) {
+      // handle error
+      console.error(err);
+      return res.json({ success: false, message: 'Session save error!' });
+    }
+        res.json({ success: true, profile: profile });
+  });
 };
 
 const logout = (req, res) => {
@@ -98,6 +104,7 @@ const isProfileOwner = (req, res, next) => {
 const isPlanOwner = (req, res, next) => {
   if (req.session.account._id.toString() != req.plan.owner._id.toString())
     return res.json({ success: false, message: "You don't have permission!" });
+  next();
 };
 const checkToken = (req, res, next) => {
   const token = req.headers.authorization;
@@ -131,7 +138,7 @@ const LoginWithToken = async (req, res, next) => {
         select: "-password",
       });
       if(!profile) return res.json({ success: false, message: "Invalid Token!" })
-    req.session.account = profile.owner;
+    req.session.account = { _id: profile.owner._id, email: profile.owner.email};
     next();
   } catch (error) {
     return res.json({ success: false, message: "Internal server error!" });
@@ -140,8 +147,9 @@ const LoginWithToken = async (req, res, next) => {
 
 const editaccount = async (req, res) => {
   const { email, password } = req.body;
-  if(!password) return res.json({ success: false, message: "Nothing provided!" });
+  if(!password) return res.json({ success: false, message: "Please type a password (new or old)!" });
   try {
+    if(req.session.account.email === email) return res.json({ success: false, message: "You already have this email!" });
     let user;
     user = await accountSchema.findOne({ email });
     if (user)
@@ -160,7 +168,7 @@ const editaccount = async (req, res) => {
     account.email = email ? email : account.email;
     account.password = password ? hashed : account.password;
     account.save();
-    req.session.account = account;
+    req.session.account = { _id: profile.owner._id, email: profile.owner.email};
     return res.json({ success: true, account: account });
   } catch (error) {
     return res.json({ success: true, message: "Internal server error!" });

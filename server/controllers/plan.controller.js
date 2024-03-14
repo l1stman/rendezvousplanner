@@ -3,6 +3,7 @@ import randtoken from "rand-token";
 import planSchema from "../models/plan.schema.js";
 import rendezvousSchema from "../models/rendezvous.schema.js";
 import profileSchema from "../models/profile.schema.js";
+import loadash from "lodash";
 const id = async (req, res, next) => {
     const { id } = req.params;
   if (!id) return res.json({ success: false, message: "Invalid id!" });
@@ -58,7 +59,7 @@ const edit = (req, res) => {
             thumbnail: thumbnail ? thumbnail : reqPlan.thumbnail,
             date: date ? new Date(date) : reqPlan.date
         }
-        plan = _.extend(plan, updates);
+        plan = loadash.extend(plan, updates);
         plan.save();
     return res.json({ success: true, plan: plan })
 }
@@ -174,7 +175,7 @@ const reserve = async (req, res) => {
     fetch('https://us1.pdfgeneratorapi.com/api/v4/documents/generate', {
         method: 'POST',
         headers: {
-          'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjOGFhMmJiMjUzYmI2ZDE0MWI3NjllZTdiZjc2NjY4ZDk3YTgwMWI3MDNmMmM1ZWUxZTcwYTE2NjMwMzM5YTgwIiwic3ViIjoibWFyb3VhbmVha2hpYXI3QGdtYWlsLmNvbSIsImV4cCI6MTcwOTkxNzQ2N30.idgRzZWgRoxrw59nNubp9KClLH9SGxESncIAK2BrG34',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjOGFhMmJiMjUzYmI2ZDE0MWI3NjllZTdiZjc2NjY4ZDk3YTgwMWI3MDNmMmM1ZWUxZTcwYTE2NjMwMzM5YTgwIiwic3ViIjoiZGVtby5leGFtcGxlQGFjdHVhbHJlcG9ydHMuY29tIiwiZXhwIjoxNTg2MTEyNjM5fQ.ARDFr-BJ3jv9WRQPXpkU30QBYFVjS5jjOmdjMEBTmZg',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -215,7 +216,7 @@ const serial = async (req, res, next) => {
         var rendezvous = await rendezvousSchema
           .findOne({ serial: serial })
           .populate({ path: "plan" });
-    
+
         if (!rendezvous)
           return res.json({
             success: false,

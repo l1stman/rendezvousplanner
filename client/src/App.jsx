@@ -8,6 +8,8 @@ import PlanReserve from "./pages/[Plan]reserve";
 import AuthPage from "./pages/Auth";
 import Dashboard from "./pages/dashboard";
 import NotFound from "./pages/notfound";
+import Profile from "./pages/Profile";
+import ViewerProfile from "./pages/Profile[id]";
 
 
 
@@ -22,6 +24,8 @@ function App() {
         <Route path="/plans/:id/reserve" element={<PlanReserve/>} />
         <Route path="/auth" element={<AuthPage/>} />
         <Route path="/dashboard" element={<Dashboard/>} />
+        <Route path="/profile" element={<Profile/>} />
+        <Route path="/profile/:id" element={<ViewerProfile/>} />
         <Route path="*" element={<NotFound/>} />
       </Route>
     </Routes>

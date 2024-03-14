@@ -9,7 +9,7 @@ const cache = apicache.middleware;
 router.route("/list").get(planController.list) // full plans data
 router.route("/list/length").get(planController.listLength) // full plans data length
 router.route("/list/explore").get(cache("5 minutes"), planController.listByPage) // plans data by page
-router.route("/list/owner/:owner").get(cache("5 minutes"), planController.listByOwner)  // plans list
+router.route("/list/owner/:owner").get( planController.listByOwner)  // plans list
 router.route("/list/date/:date").get(cache("5 minutes"), planController.listByDate) // plans list 
 
 router.route("/").post(authController.isLogged, planController.create) // create
@@ -17,7 +17,7 @@ router.route("/:id").get(cache("10 seconds"), planController.get).put(authContro
 
 router.route("/:id/reserve").post(planController.reserve) // reserve a rendezvous
 
-router.route("/get/:serial").get(cache("10 seconds"), planController.getRendezvous) // get plan by serial
+router.route("/get/:serial").get(cache("30 minutes"),planController.serial, planController.getRendezvous) // get plan by serial
 router.param("id", planController.id)
 router.param("serial", planController.serial)
 

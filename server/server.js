@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import session from 'express-session';
+import cookieParser from 'cookie-parser';
 
 import auth from "./routes/auth.js";
 import profile from "./routes/profile.js";
@@ -16,30 +17,23 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 const uri = process.env.MONGO_URI || "";
         
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173",
+  methods: "GET,POST,PUT,DELETE",
+  credentials: true,
+}));
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+}));
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(helmet(
-  {
-    crossOriginResourcePolicy: false,
-  }
-))
-app.use(
-    cors({
-      origin: "http://localhost:5173",
-      methods: "GET,POST,PUT,DELETE",
-      credentials: true,
-    })
-  );
-app.use(
-    session({
-      secret: "SECRET", // Replace with a more secure secret
-      resave: false,
-      saveUninitialized: false,
-      cookie: { maxAge: 24 * 60 * 60 * 1000 }, // Set maxAge to 24 hours in milliseconds
-    })
-  );
-
+app.use(session({
+  secret: "SECRET", // Replace with a more secure secret
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 24 * 60 * 60 * 1000 }, // Set maxAge to 24 hours in milliseconds
+}));
 app.use(express.static('public'));
 
 app.use("/auth", auth)

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useLogout } from '../hooks/logout';
 import { FaList, FaX } from 'react-icons/fa6';
+import { Dropdown } from 'flowbite-react';
 
 const NavBar = () => {
   const profile = useSelector(state => state.profile);
@@ -48,10 +49,20 @@ const NavBar = () => {
           )}
           {Object.keys(profile).length > 0 ? (
             <div className="flex items-center">
-              <Link to="/dashboard" className="mr-2 flex items-center">
-                <img src={profile.avatar_url} alt={profile.name} className='rounded-full w-6 h-6'/>
-                {profile?.name}
-              </Link>
+              <Dropdown inline label={<>
+                <img src={profile.avatar_url} alt={profile.name} className='rounded-full w-6 h-6'/> <p>{profile?.name}</p> 
+                </>}>
+                <Link to="/profile">
+                <Dropdown.Item>
+                Profile
+                </Dropdown.Item>
+              </Link> 
+                <Link to="/dashboard">
+                <Dropdown.Item>
+                Dashboard
+                </Dropdown.Item>
+              </Link> 
+                </Dropdown>
               <button onClick={Logout} className="px-3 py-[2px] rounded-lg bg-secondary text-white text-sm font-meduim border-2 border-green-700 hover:ring-2 hover:ring-green-800">
                 Logout
               </button>

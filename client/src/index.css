@@ -54,3 +54,39 @@ body {
     }
   }
 
+  .dots {
+    width: 21.1px;
+    height: 21.1px;
+    position: relative;
+ }
+ 
+ .dots::before,
+ .dots::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: #34c083;
+ }
+ 
+ .dots::before {
+    box-shadow: -42.2px 0 #34c083;
+    animation: dots-dm1l1chg 0.48s infinite linear;
+ }
+ 
+ .dots::after {
+    transform: rotate(0deg) translateX(42.2px);
+    animation: dots-dh1qq5hg 0.48s infinite linear;
+ }
+ 
+ @keyframes dots-dm1l1chg {
+    100% {
+       transform: translateX(42.2px);
+    }
+ }
+ 
+ @keyframes dots-dh1qq5hg {
+    100% {
+       transform: rotate(-180deg) translateX(42.2px);
+    }
+ }

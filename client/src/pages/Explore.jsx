@@ -90,7 +90,6 @@ useEffect(() => {
   };
 
   const handleDate = (e) => {
-    console.log(e)
     fetchPostsByDate(e)
   }
 

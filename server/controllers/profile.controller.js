@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import profileSchema from "../models/profile.schema.js";
 import isImageUrl from "is-image-url"
 const id = async (req, res, next) => {
@@ -69,7 +69,7 @@ const edit = (req, res) => {
             avatar_url: avatar_url ? avatar_url : reqProfile.avatar_url,
             bio: bio ? bio : reqProfile.bio
         }
-        profile = _.extend(profile, updates)
+        profile = lodash.extend(profile, updates)
 
         profile.save()
         return res.json({ succes: true, profile: profile })
