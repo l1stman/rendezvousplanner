@@ -9,7 +9,7 @@ const PlansTab = ({ profile }) => {
     const [error, setError] = useState("");
     useEffect(() => {
         // Replace with your actual API endpoint
-        fetch('http://localhost:4000/plan/list/owner/' + profile?.owner?._id) 
+        fetch(import.meta.env.VITE_BASE_URL + '/plan/list/owner/' + profile?.owner?._id) 
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -159,7 +159,7 @@ function Create({ pushPlan }) {
             // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
               axios.defaults.withCredentials = true;
             const response = await axios.post(
-              "http://localhost:4000/plan", {
+              import.meta.env.VITE_BASE_URL + "/plan", {
                 title: e.target.title.value,
                 description: e.target.description.value,
                 thumbnail: e.target.thumbnail.value,
@@ -291,7 +291,7 @@ async function handleEdit(e) {
         // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           axios.defaults.withCredentials = true;
         const response = await axios.put(
-          "http://localhost:4000/plan/" + plan._id, {
+          import.meta.env.VITE_BASE_URL + "/plan/" + plan._id, {
             title: planData.title,
             description: planData.description,
             thumbnail: planData.thumbnail,
@@ -417,7 +417,7 @@ async function handleDelete(e) {
         // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           axios.defaults.withCredentials = true;
         const response = await axios.delete(
-          "http://localhost:4000/plan/" + plan_id,
+          import.meta.env.VITE_BASE_URL + "/plan/" + plan_id,
           {
             headers: {
               "Content-Type": "application/json",

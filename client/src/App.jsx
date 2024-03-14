@@ -12,7 +12,6 @@ import Profile from "./pages/Profile";
 import ViewerProfile from "./pages/Profile[id]";
 
 
-
 function App() {
   return (
     <BrowserRouter>

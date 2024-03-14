@@ -7,7 +7,7 @@ const JoinersTab = ({ profile }) => {
     const [error, setError] = useState("");
     useEffect(() => {
         // Replace with your actual API endpoint
-        fetch('http://localhost:4000/plan/list/owner/' + profile?.owner?._id) 
+        fetch(import.meta.env.VITE_BASE_URL + '/plan/list/owner/' + profile?.owner?._id) 
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -84,7 +84,7 @@ async function handleSearch(e) {
     try {
         setLoading(true)
         const { serial } = e.target;
-        const response = await axios.get(`http://localhost:4000/plan/get/${serial.value}`,{
+        const response = await axios.get(import.meta.env.VITE_BASE_URL + `/plan/get/${serial.value}`,{
             headers: {
               "Content-Type": "application/json",
             },

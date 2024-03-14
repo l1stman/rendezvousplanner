@@ -28,7 +28,7 @@ const PlanReserve = () => {
   const fetchPlan = async () => {
     try {
         setLoading(true);
-      axios.get(`http://localhost:4000/plan/${id}`).then((response) => {
+      axios.get(import.meta.env.VITE_BASE_URL + `/plan/${id}`).then((response) => {
         if (response.data.success == false) return;
         setPlan(response.data);
         setLoading(false);
@@ -48,7 +48,7 @@ const PlanReserve = () => {
     const { name, cin, email } = e.target;
     
     try {
-        const response = await axios.post(`http://localhost:4000/plan/${id}/reserve`, {
+        const response = await axios.post(import.meta.env.VITE_BASE_URL +`/plan/${id}/reserve`, {
             name: name.value,
             cin: cin.value,
             email: email.value

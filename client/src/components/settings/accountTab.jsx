@@ -34,7 +34,7 @@ const AccountTab = ({ profile }) => {
         setLoading(true)
         try {
             axios.defaults.withCredentials = true;
-            const response = await axios.put(`http://localhost:4000/account`, profileData.owner, {	headers: {
+            const response = await axios.put(import.meta.env.VITE_BASE_URL + `/account`, profileData.owner, {	headers: {
               "Content-Type": "application/json",
             },
             });

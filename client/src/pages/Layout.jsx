@@ -16,7 +16,7 @@ const Layout = () => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       axios.defaults.withCredentials = true;
       const response = await axios.post(
-        "http://localhost:4000/auth/protected",
+        import.meta.env.VITE_BASE_URL +"/auth/protected",
         {
           headers: {
             "Content-Type": "application/json",

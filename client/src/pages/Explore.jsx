@@ -34,12 +34,12 @@ const Explore = () => {
     try {
       setLoading(true);
       
-      axios.get(`http://localhost:4000/plan/list/length`).then((response) => {
+      axios.get(import.meta.env.VITE_BASE_URL + `/plan/list/length`).then((response) => {
         if (response.data.success) {
           setTotalPages(Math.ceil(response.data.length / pageSize));
           axios
             .get(
-              `http://localhost:4000/plan/list/explore?page=${page}&limit=${pageSize}`
+              import.meta.env.VITE_BASE_URL +`/plan/list/explore?page=${page}&limit=${pageSize}`
             )
             .then( (response) => {
               if (response.data.success) {
@@ -61,7 +61,7 @@ const fetchPostsByDate = async (date) => {
     setLoading(true);
         axios
           .get(
-            `http://localhost:4000/plan/list/date/${date}`
+            import.meta.env.VITE_BASE_URL +`/plan/list/date/${date}`
           )
           .then( (response) => {
             if (response.data.success) {
@@ -120,7 +120,8 @@ useEffect(() => {
               <div className="w-1/7 flex justify-center items-center">
                 <input
                   type="text"
-                  className="outline-none focus:border-secondary w-full px-4 py-1 bg-white text-black rounded-md"
+                  disabled
+                  className="cursor-not-allowed outline-none focus:border-secondary w-full px-4 py-1 bg-white text-black rounded-md"
                   placeholder="Search"
                 />
               </div>
