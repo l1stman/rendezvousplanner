@@ -34,12 +34,12 @@ const Explore = () => {
     try {
       setLoading(true);
       
-      axios.get(`http://localhost:4000/plan/list/length`).then((response) => {
+      axios.get(import.meta.env.VITE_BASE_URL + `/plan/list/length`).then((response) => {
         if (response.data.success) {
           setTotalPages(Math.ceil(response.data.length / pageSize));
           axios
             .get(
-              `http://localhost:4000/plan/list/explore?page=${page}&limit=${pageSize}`
+              import.meta.env.VITE_BASE_URL +`/plan/list/explore?page=${page}&limit=${pageSize}`
             )
             .then( (response) => {
               if (response.data.success) {
@@ -61,7 +61,7 @@ const fetchPostsByDate = async (date) => {
     setLoading(true);
         axios
           .get(
-            `http://localhost:4000/plan/list/date/${date}`
+            import.meta.env.VITE_BASE_URL +`/plan/list/date/${date}`
           )
           .then( (response) => {
             if (response.data.success) {

@@ -31,7 +31,7 @@ const Profile = () => {
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           axios.defaults.withCredentials = true;
           const response = await axios.post(
-              "http://localhost:4000/auth/protected",
+              import.meta.env.VITE_BASE_URL +"/auth/protected",
               {
                   headers: {
                       "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const Profile = () => {
   }
       
       const fetchPlans = async (PROFILE) => {
-        const response = await axios.get('http://localhost:4000/plan/list/owner/' + PROFILE?.owner._id)
+        const response = await axios.get(import.meta.env.VITE_BASE_URL +'/plan/list/owner/' + PROFILE?.owner._id)
         const data = response.data;
         if(data.success === false) {
           setLoading(false)
@@ -141,7 +141,7 @@ const Plans = ({ profile }) => {
 const [plansArray, setPlans] = useState([]);
 
   const fetchPlans = async () => {
-    const response = await axios.get('http://localhost:4000/plan/list/owner/' + profile?.owner._id)
+    const response = await axios.get(import.meta.env.VITE_BASE_URL +'/plan/list/owner/' + profile?.owner._id)
     const data = response.data;
     if(data.success === true) 
       setPlans(data.plans);

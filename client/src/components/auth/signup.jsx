@@ -32,7 +32,7 @@ const SignUp = ({ page, sendStatus, SignUpPageStatus }) => {
 
        try {
          const response = await axios.post(
-           "http://localhost:4000/auth/signup",
+          import.meta.env.VITE_BASE_URL + "/auth/signup",
            accountData,
            {
              headers: {
@@ -71,7 +71,7 @@ const SignUp = ({ page, sendStatus, SignUpPageStatus }) => {
         };
         try {
           const response = await axios.post(
-            "http://localhost:4000/profile/create",
+            import.meta.env.VITE_BASE_URL + "/profile/create",
             profileData,
             {
               headers: {

@@ -31,7 +31,7 @@ const ProfileTab = (props) => {
     try {
       axios.defaults.withCredentials = true;
 
-      const response = await axios.put(`http://localhost:4000/profile/${profile._id}`, profile, {	headers: {
+      const response = await axios.put(import.meta.env.VITE_BASE_URL + `/profile/${profile._id}`, profile, {	headers: {
         "Content-Type": "application/json",
         },
       });

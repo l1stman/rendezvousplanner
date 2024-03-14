@@ -15,7 +15,7 @@ const Plan = () => {
   const fetchPlan = async () => {
     setLoading(true);
     try {
-      axios.get(`http://localhost:4000/plan/${id}`).then((response) => {
+      axios.get(import.meta.env.VITE_BASE_URL + `/plan/${id}`).then((response) => {
         if (response.data.success == false) return;
         setPlan(response.data);
         setLoading(false);

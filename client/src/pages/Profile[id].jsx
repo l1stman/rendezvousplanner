@@ -32,7 +32,7 @@ const ViewerProfile = () => {
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           axios.defaults.withCredentials = true;
           const response = await axios.post(
-              "http://localhost:4000/auth/protected",
+              import.meta.env.VITE_BASE_URL + "/auth/protected",
               {
                   headers: {
                       "Content-Type": "application/json",
@@ -55,7 +55,7 @@ const ViewerProfile = () => {
   }
   
   const fetchUserProfile = async () => {
-    const response = await axios.get('http://localhost:4000/profile/' + id);
+    const response = await axios.get(import.meta.env.VITE_BASE_URL + '/profile/' + id);
     const data = response.data;
     if(data.success === false) return setLoading(false); 
       setUserProfile(data);
@@ -149,7 +149,7 @@ const Plans = ({ profile }) => {
 const [plansArray, setPlans] = useState([]);
 
   const fetchPlans = async () => {
-    const response = await axios.get('http://localhost:4000/plan/list/owner/' + profile?.owner._id)
+    const response = await axios.get(import.meta.env.VITE_BASE_URL + '/plan/list/owner/' + profile?.owner._id)
     const data = response.data;
     if(data.success === true) 
       setPlans(data.plans);

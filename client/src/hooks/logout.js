@@ -9,7 +9,7 @@ export const useLogout = () => {
   const logout = async () => {
     try {
       // Send a request to the logout endpoint
-      await axios.post('http://localhost:4000/auth/logout');
+      await axios.post(import.meta.env.VITE_BASE_URL + '/auth/logout');
 
       // Remove the user data from the Redux store
       dispatch(deleteProfile());
