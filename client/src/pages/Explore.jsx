@@ -120,7 +120,8 @@ useEffect(() => {
               <div className="w-1/7 flex justify-center items-center">
                 <input
                   type="text"
-                  className="outline-none focus:border-secondary w-full px-4 py-1 bg-white text-black rounded-md"
+                  disabled
+                  className="cursor-not-allowed outline-none focus:border-secondary w-full px-4 py-1 bg-white text-black rounded-md"
                   placeholder="Search"
                 />
               </div>
