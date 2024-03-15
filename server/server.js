@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 4000;
 const uri = process.env.MONGO_URI || "";
         
 app.use(cors({
-  origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://l1stman.github.io/", "https://l1stman.github.io/rendezvousplanner"],
   methods: "GET,POST,PUT,DELETE",
   credentials: true,
 }));

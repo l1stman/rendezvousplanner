@@ -21,7 +21,7 @@ const NavBar = () => {
         {/* Left Section */}
         <div className={`flex items-center space-x-6`}>
           {/* Logo */}
-          <img src="/logo.png" alt="Logo" className="w-28" />
+          <img src="/rendezvousplanner/logo.png" alt="Logo" className="w-28" />
 
           {!isOpen && (
                 <>
