@@ -14,7 +14,7 @@ import ViewerProfile from "./pages/Profile[id]";
 
 function App() {
   return (
-    <BrowserRouter basename="/rendezvousplanner">
+    <BrowserRouter>
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
